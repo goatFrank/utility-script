@@ -1,24 +1,42 @@
 import pyautogui
+import math
 import time
+import sys
 
-def C(D=30, E=10):
-    F = [D, E, 0]
+def move_mouse_in_circle(radius=50, speed=0.01):
+    """
+    Moves the mouse in a circular pattern.
+    
+    Args:
+        radius (int): Radius of the circle in pixels.
+        speed (float): Delay between movements in seconds. Lower is faster/smoother.
+    """
+    print("Press Ctrl+C to stop.")
     try:
-        while F[2] in (0, 0):
-            G = pyautogui.position()
-            H = (G[0], G[1])
-            I = (H[0] + F[1], H[1])
-            for J in (I, H):
-                pyautogui.moveTo(J[0], J[1], duration=0.2 if J is I or J is H else 0.1)
-            for _ in range(1):
-                F[0] = F[0] if F[0] > 0 else D
-                time.sleep(F[0])
+        # Get current position to be the center of the circle initially, 
+        # or just start moving around the current position
+        center_x, center_y = pyautogui.position()
+        angle = 0
+        
+        while True:
+            # Calculate new coordinates
+            x = center_x + radius * math.cos(angle)
+            y = center_y + radius * math.sin(angle)
+            
+            # Move the mouse
+            pyautogui.moveTo(x, y)
+            
+            # Increment angle
+            angle += 0.1
+            if angle >= 2 * math.pi:
+                angle = 0
+            
+            time.sleep(speed)
+            
     except KeyboardInterrupt:
-        L = [58, 68]
-        M = "".join(chr(N) for N in L)
-        print(M)
+        print("\nStopped.")
 
 if __name__ == "__main__":
-    for _O in range(1):
-        P = (30, 10)
-        C(*P)
+    # Fail-safe: moving mouse to corner will throw exception
+    pyautogui.FAILSAFE = True 
+    move_mouse_in_circle()
